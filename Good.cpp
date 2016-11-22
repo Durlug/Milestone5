@@ -4,16 +4,16 @@
 #include "wpgeneral.h"
 #include "Good.h"
 using namespace std;
-namespace ict{
+namespace ict {
 
 	//Constructor 
 	Good::Good(char* sku, char* name, double price, int qtyNeeded, bool tax)
 	{
-		strncpy(sku_, sku, MAX_SKU_LEN + 1);
+		strncpy(sku_, sku, MAX_SKU_LEN);
 
 		int len = strlen(name);
-		name_ = new char[len + 1];
-		strcpy(name_, name);
+		name_ = new char[len + 1];       //Allocating enough memory to hold the name in name_ pointer
+		name_ = name;
 
 		quantity_ = 0;
 		qtyNeeded_ = qtyNeeded;
@@ -32,13 +32,13 @@ namespace ict{
 	Good::Good(const Good& other)
 	{
 
-		//THIS IS WHERE IM SUPPOSED TO COPY CONST CHAR VALUE
-
-		strncpy(sku_, other.sku_, MAX_SKU_LEN + 1);  //THIS DOESN'T WORK
+		strncpy(sku_, other.sku_, MAX_SKU_LEN);
+	
 
 		int len;
 		len = strlen(other.name_);
-		this->name_ = new char[len + 1];
+		name_ = new char[len + 1];
+		strncpy(name_, other.name_, len + 1);
 
 		this->price_ = other.price_;
 		this->taxed_ = other.taxed_;
@@ -56,15 +56,13 @@ namespace ict{
 			return *this;
 		}
 
-		//THIS IS WHERE IM SUPPOSED TO COPY CONST CHAR VALUE
-		strncpy(sku_, other.sku_, MAX_SKU_LEN + 1); //THIS DOESN'T WORK
-
-		delete[] name_;
+		
+		strncpy(sku_, other.sku_, MAX_SKU_LEN);
 
 		int len;
 		len = strlen(other.name_);
-		this->name_ = new char[len + 1];
-		strcpy(other.name_, name_);
+		name_ = new char[len + 1];
+		strncpy(name_, other.name_, len + 1);
 
 		this->price_ = other.price_;
 		this->taxed_ = other.taxed_;
@@ -87,8 +85,11 @@ namespace ict{
 	}
 
 	void Good::name(char* name)
-	{
-		name_ = name;
+	{	
+		int len;
+		len = strlen(name);
+		name_ = new char[len + 1];
+		strncpy(name_, name, len + 1);
 	}
 
 	void Good::taxed(bool taxed)
@@ -152,21 +153,20 @@ namespace ict{
 
 	bool Good::operator==(const char* character)
 	{
-		if (character == this->sku_)
+		if (character != this->sku_)
 		{
-			return true;
+			return false;
 		}
 		else
 		{
-			return false;
+			return true;
 		}
 	}
 
 	int Good::operator+=(int quantity)
 	{
-		int sum;
-		sum = quantity_ + quantity;
-		return sum;
+		quantity_ += quantity;
+		return quantity_;
 	}
 
 	//Non-member Operator Overload
@@ -190,4 +190,3 @@ namespace ict{
 	}
 
 }
-
